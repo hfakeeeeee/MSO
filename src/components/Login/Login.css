@@ -1,13 +1,13 @@
-// src/components/Login/Login.css
+/* src/components/Login/Login.css */
+
 .login {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background-image: url("https://images.unsplash.com/photo-1535570491151-ba3a3c1e6b48?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80");
+    background-image: url("bg-3.jpg");
     background-size: cover;
-    background-position: center center;
   }
   
   .login-box {
@@ -15,7 +15,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: #fff;
     padding: 40px;
     border-radius: 10px;
     box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1);
@@ -25,7 +25,7 @@
     font-size: 36px;
     margin-bottom: 20px;
     text-align: center;
-    color: #333;
+    color: #ffffff;
   }
   
   form {
@@ -43,10 +43,12 @@
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     width: 300px;
     max-width: 100%;
+    background-color: #f2f2f2;
+    color: #333;
   }
   
   button {
-    background-color: #4b4c8c;
+    background-color: #ed6b75;
     color: #fff;
     padding: 10px 20px;
     border: none;
@@ -57,12 +59,21 @@
   }
   
   button:hover {
-    background-color: #333;
+    background-color: #e0444e;
   }
   
   .switch {
     font-size: 14px;
-    color: #4b4c8c;
+    color: #fff;
     cursor: pointer;
     text-decoration: underline;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+    display: block;
+    margin-top: 20px;
   }
+  
+  .body {
+    margin: 0;
+    padding: 0;
+  }
+  
