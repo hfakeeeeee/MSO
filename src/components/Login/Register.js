@@ -1,35 +1,31 @@
 import React, { useState } from "react";
 import { auth } from "../../firebase";
-import "./Login.css";
+import "./Register.css";
 import { useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
-const Login = () => {
+const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const userCredential = signInWithEmailAndPassword(auth, email, password);
+      const userCredential = createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       navigate("/Lobby");
-      // Login successful, you can now perform additional actions, e.g., redirect to another page, etc.
+      // Registration successful, you can now perform additional actions, e.g., update profile, redirect to another page, etc.
     } catch (error) {
-      // Handle login errors here.
+      // Handle registration errors here.
       console.error(error);
     }
   };
 
-  const goToRegister = () => {
-    navigate("/register");
-  };
-
   return (
-    <div className="login">
-        <h1>LOGIN</h1>
-        <form onSubmit={handleLogin}>
+    <div className="register">
+        <h1>REGISTER</h1>
+        <form onSubmit={handleRegister}>
           <div className="form-group">
             <input
               type="email"
@@ -47,10 +43,7 @@ const Login = () => {
             />
           </div>
           <div className="button-group">
-            <button className="login-btn" type="submit">
-              Sign in
-            </button>
-            <button className="signup-btn" onClick={goToRegister}>
+            <button className="signup-btn-2" type="submit">
               Sign up
             </button>
           </div>
@@ -59,4 +52,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

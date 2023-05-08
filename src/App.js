@@ -6,6 +6,7 @@ import Lobby from './components/Lobby/Lobby';
 import Game from './components/Game/Game';
 import Results from './components/Results/Results';
 import Instructions from './components/Instructions/Instructions';
+import Register from './components/Login/Register';
 
 function App() {
   return (
@@ -13,7 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/lobby" element={<Lobby />} />
         <Route path="/game" element={<Game />} />
         <Route path="/results" element={<Results />} />
