@@ -44,7 +44,6 @@ input {
     display: flex;
     justify-content: center;
     width: 300px;
-    margin-bottom: 20vh;
   }
   
   .signup-btn-2 {
@@ -58,4 +57,16 @@ input {
     cursor: pointer;
     background-color: #d1b38d;
     color: #FDF0DE;
+  }
+
+  .login-link {
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  p {
+    font-size: 16px;
+    color: #ffffff;
+    font-family: "Outfit", sans-serif;
+    margin: 0;
   }

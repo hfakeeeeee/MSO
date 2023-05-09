@@ -42,11 +42,14 @@ const Register = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <div className="button-group">
+          <div className="button-group-2">
             <button className="signup-btn-2" type="submit">
               Sign up
             </button>
-          </div>
+            <div className="login-link">
+              <p onClick={() => navigate("/login")}>If you already have an account, login here</p>
+            </div>
+        </div>
         </form>
     </div>
   );

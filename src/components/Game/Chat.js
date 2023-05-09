@@ -48,14 +48,14 @@ const Chat = ({ roomId, user }) => {
           </div>
         ))}
       </div>
-      <form onSubmit={sendMessage}>
+      <form className='chatForm' onSubmit={sendMessage}>
         <input
           type="text"
           value={newMessage}
           onChange={(event) => setNewMessage(event.target.value)}
           placeholder="Nhập tin nhắn..."
         />
-        <button type="submit">Gửi</button>
+        <button className='chatButton' type="submit">Gửi</button>
       </form>
     </div>
   );
