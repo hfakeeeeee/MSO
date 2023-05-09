@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { auth, database } from '../../firebase';
 import { signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import { onValue, ref, push, set } from 'firebase/database';
+import { onValue, ref, push, set, child, update } from 'firebase/database'; // Thêm 'child' và 'update' vào đây
 
 import './Lobby.css';
 
@@ -34,21 +34,48 @@ const Lobby = () => {
     };
   }, []);
 
-  const createRoom = async () => {
+  const createRoom = () => {
     if (!newRoomName) return;
+  
     const roomRef = ref(database, 'rooms');
-    set(roomRef, {
+    const newRoom = {
       name: newRoomName,
-      // Thêm các thuộc tính khác của phòng tại đây
-    });
-
+      players: {
+        [user.uid]: {
+          displayName: user.displayName || user.email,
+          role: 0,
+          live: 'live',  // Trang thái sống chết của người chơi
+          status: 'waiting', // Chờ người chơi khác
+        },
+      },
+      status: 'waiting', // Trạng thái của phòng
+      timeForm: 'day', // trạng thái ngày hoặc đêm trong game
+      currentTurn: 0,
+      maxPlayer:16, 
+      minPlayer:8,
+    };
+  
+    push(roomRef, newRoom);
+  
     setNewRoomName('');
   };
   
 
-  const joinRoom = (roomId) => {
+  const joinRoom = async (roomId) => {
+    if (!user) return;
+    const roomRef = ref(database, `rooms/${roomId}`);
+    const playersRef = child(roomRef, 'players');
+    await update(playersRef, {
+      [user.uid]: {
+        displayName: user.displayName || user.email,
+        role: 0,
+        live: 'live',
+        status: 'waiting',
+      },
+    });
     navigate(`/game/${roomId}`);
   };
+  
 
   const handleLogout = async () => {
     await signOut(auth);

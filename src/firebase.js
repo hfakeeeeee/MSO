@@ -5,6 +5,7 @@ import { getDatabase } from "firebase/database";
 const firebaseConfig = {
   apiKey: "AIzaSyBfwA7dEyWug1NPxQKdw0_zSNgmcNmJQdw",
   authDomain: "masoigame-dfb05.firebaseapp.com",
+  databaseURL: "https://masoigame-dfb05-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "masoigame-dfb05",
   storageBucket: "masoigame-dfb05.appspot.com",
   messagingSenderId: "682238712532",
