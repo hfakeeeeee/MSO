@@ -12,24 +12,28 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const userCredential = createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+      await createUserWithEmailAndPassword(auth, email, password);
       navigate("/Lobby");
-      // Registration successful, you can now perform additional actions, e.g., update profile, redirect to another page, etc.
+      // Registration successful, you can now perform additional actions, e.g., redirect to another page, etc.
     } catch (error) {
       // Handle registration errors here.
       console.error(error);
     }
   };
 
+  const goToLogin = () => {
+    navigate("/login");
+  };
+
   return (
     <div className="register">
-        <h1>REGISTER</h1>
-        <form onSubmit={handleRegister}>
+      <h1>SIGN UP</h1>
+      <form onSubmit={handleRegister}>
+        <div className="form-container">
           <div className="form-group">
             <input
               type="email"
-              placeholder="username"
+              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -37,20 +41,23 @@ const Register = () => {
           <div className="form-group">
             <input
               type="password"
-              placeholder="********"
+              placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           <div className="button-group-2">
-            <button className="signup-btn-2" type="submit">
-              Sign up
+            <button className="register-signup-btn" type="submit">
+              Sign Up
             </button>
-            <div className="login-link">
-              <p onClick={() => navigate("/login")}>If you already have an account, login here</p>
-            </div>
+          </div>
+          <div className="login-link-container">
+            <p className="login-link" onClick={goToLogin}>
+              If you already have an account, just login here.
+            </p>
+          </div>
         </div>
-        </form>
+      </form>
     </div>
   );
 };
