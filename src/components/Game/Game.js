@@ -93,18 +93,24 @@ const Game = () => {
   if (!room) return <div>Loading...</div>;
 
   const handleVote = async (playerId) => {
-    if (playerId === user.uid || currentVote === playerId) {
-        return;
+    if (playerId === user.uid) {
+      return;
     }
   
     const updates = {};
-    if (currentVote) {
-      updates[`rooms/${roomId}/players/${currentVote}/votes/${user.uid}`] = null;
+  
+    if (currentVote === playerId) {
+      updates[`rooms/${roomId}/players/${playerId}/votes/${user.uid}`] = null;
+      setCurrentVote(null);
+    } else {
+      if (currentVote) {
+        updates[`rooms/${roomId}/players/${currentVote}/votes/${user.uid}`] = null;
+      }
+      updates[`rooms/${roomId}/players/${playerId}/votes/${user.uid}`] = true;
+      setCurrentVote(playerId);
     }
-    updates[`rooms/${roomId}/players/${playerId}/votes/${user.uid}`] = true;
   
     await update(ref(database), updates);
-    setCurrentVote(playerId);
   };
   
   
@@ -136,27 +142,17 @@ const Game = () => {
           const currentUserVote = user && playerData && playerData.votes && playerData.votes[user.uid];
   
           return (
-            <div key={index} className="player-card">
+            <div key={index}
+            className={`player-card ${!isCurrentUser && playerData ? 'clickable' : ''}`}
+            onClick={!isCurrentUser && playerData ? () => handleVote(playerId) : undefined}>
               <div className="player-name">
                 {playerName} ({voteCount} votes)
-              </div>
-              {/* Thêm nút biểu quyết cho mỗi người chơi, nếu người chơi tồn tại */}
-              {playerData && !isCurrentUser && (
-                <button
-                  className="vote-button"
-                  onClick={() => handleVote(playerId)}
-                >
-                  Biểu quyết
-                </button>
-              )}
-              {/* Hiển thị thông tin về ai người chơi đang biểu quyết */}
-              {isCurrentUser ? (
-                <p>Bạn không thể biểu quyết cho chính mình</p>
-              ) : currentUserVote ? (
-                <p>Đang bầu: {playerData.displayName || playerData.email}</p>
-              ) : (
-                <p>Chưa bầu</p>
-              )}
+                {playerData && isCurrentUser && (
+                <p>Đang bầu: {room.players[currentVote]?.displayName || room.players[currentVote]?.email || 'Chưa bầu'}</p>
+                )}
+
+               </div>
+
             </div>
           );
         })}
