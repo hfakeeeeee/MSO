@@ -42,7 +42,14 @@ input {
     font-family: "Outfit", sans-serif;
   }
   
-  button {
+  .button-group {
+    display: flex;
+    margin-left: 1vh;
+  }
+
+  .login-btn {
+    background-color: #d1b38d;
+    color: #FDF0DE;
     padding: 20px;
     border-radius: 86px;
     font-size: 20px;
@@ -52,38 +59,26 @@ input {
     font-family: "Outfit", sans-serif;
     cursor: pointer;
     margin-right: 30px;
-    margin-bottom: 20vh;
     align-items: center;
-    justify-content: center;
-  }
-
-  button {
-    padding: 20px;
-    border-radius: 86px;
-    font-size: 20px;
-    width: 110px;
-    height: 2px;
-    font-weight: 500;
-    font-family: "Outfit", sans-serif;
-    cursor: pointer;
     display: flex;
-    align-items: center;
     justify-content: center;
-  }
-  
-  .button-group {
-    display: flex;
-    margin-left: 6vh;
-  }
-
-  .login-btn {
-    background-color: #d1b38d;
-    color: #FDF0DE;
   }
   
   .signup-btn {
     background-color: transparent;
     color: #F3DCBC;
     border: 2px solid #d1b38d;
+    padding: 20px;
+    border-radius: 86px;
+    font-size: 20px;
+    width: 140px;
+    height: 3px;
+    font-weight: 500;
+    font-family: "Outfit", sans-serif;
+    cursor: pointer;
+    margin-right: 30px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
   }
   

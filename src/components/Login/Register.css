@@ -50,6 +50,7 @@ input {
 }
 
 .register-signup-btn {
+  display: flex;
   padding: 20px;
   border-radius: 41px;
   font-size: 20px;
