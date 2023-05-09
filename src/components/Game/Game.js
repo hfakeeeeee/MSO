@@ -15,6 +15,8 @@ const Game = () => {
   const [user, setUser] = useState(null);
   const [isGameReady, setIsGameReady] = useState(false);
   const { roomId } = useParams();
+  const [currentVote, setCurrentVote] = useState(null);
+
 
   const startGame = async () => {
     if (!room || !room.players) return;
@@ -90,19 +92,85 @@ const Game = () => {
 
   if (!room) return <div>Loading...</div>;
 
+  const handleVote = async (playerId) => {
+    if (playerId === user.uid || currentVote === playerId) {
+        return;
+    }
+  
+    const updates = {};
+    if (currentVote) {
+      updates[`rooms/${roomId}/players/${currentVote}/votes/${user.uid}`] = null;
+    }
+    updates[`rooms/${roomId}/players/${playerId}/votes/${user.uid}`] = true;
+  
+    await update(ref(database), updates);
+    setCurrentVote(playerId);
+  };
+  
+  
+  
+  const getCurrentUserRole = () => {
+    if (user && room && room.players) {
+      const currentUserData = room.players[user.uid];
+      return currentUserData && currentUserData.role;
+    }
+    return null;
+  };
+
+  const currentUserRole = getCurrentUserRole();
+
   return (
     <div className="game">
-      <h1>{room.name}</h1>
-      <h2>Players:</h2>
-      <ul>
-        {room.players && Object.entries(room.players).map(([playerId, playerData]) => (
-          <li key={playerId}>{playerData.displayName || playerData.email}</li>
-        ))}
-      </ul>
+      {/* Hiển thị danh sách người chơi dưới dạng lưới */}
+      <div className="players-grid">
+        {Array.from({ length: 16 }, (_, i) => i).map((_, index) => {
+          const playerId = room.players ? Object.keys(room.players)[index] : null;
+          const playerData = room.players && room.players[playerId];
+          const playerName = playerData
+            ? playerData.displayName || playerData.email
+            : "No Player";
+          const voteCount = playerData && playerData.votes
+            ? Object.values(playerData.votes).filter(Boolean).length
+            : 0;
+          const isCurrentUser = user && user.uid === playerId;
+          const currentUserVote = user && playerData && playerData.votes && playerData.votes[user.uid];
+  
+          return (
+            <div key={index} className="player-card">
+              <div className="player-name">
+                {playerName} ({voteCount} votes)
+              </div>
+              {/* Thêm nút biểu quyết cho mỗi người chơi, nếu người chơi tồn tại */}
+              {playerData && !isCurrentUser && (
+                <button
+                  className="vote-button"
+                  onClick={() => handleVote(playerId)}
+                >
+                  Biểu quyết
+                </button>
+              )}
+              {/* Hiển thị thông tin về ai người chơi đang biểu quyết */}
+              {isCurrentUser ? (
+                <p>Bạn không thể biểu quyết cho chính mình</p>
+              ) : currentUserVote ? (
+                <p>Đang bầu: {playerData.displayName || playerData.email}</p>
+              ) : (
+                <p>Chưa bầu</p>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      
+  
       <button onClick={leaveRoom}>Leave room</button>
       {/* Thêm các tính năng của trò chơi tại đây */}
-      {isGameReady && <div className="game-ready">Trò chơi sẵn sàng bắt đầu!</div>}
-
+      {isGameReady && (
+        <div className="game-ready">Trò chơi sẵn sàng bắt đầu!</div>
+      )}
+      {currentUserRole && (
+        <div className="current-role">Vai trò của bạn: {currentUserRole}</div>
+      )}
       {/* Thêm thành phần Chat */}
       {user && room && <Chat roomId={room.id} user={user} />}
     </div>
