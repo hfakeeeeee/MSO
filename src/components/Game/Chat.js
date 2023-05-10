@@ -4,7 +4,7 @@ import { database } from '../../firebase';
 import { ref, onValue, off, push } from 'firebase/database';
 import './Chat.css';
 
-const Chat = ({ roomId, user }) => {
+const Chat = ({ roomId, user, isCurrentUserAlive }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
 
@@ -48,12 +48,13 @@ const Chat = ({ roomId, user }) => {
           </div>
         ))}
       </div>
-      <form className='chatForm' onSubmit={sendMessage}>
+      <form className='chatForm' onSubmit={sendMessage} >
         <input
           type="text"
           value={newMessage}
           onChange={(event) => setNewMessage(event.target.value)}
           placeholder="Nhập tin nhắn..."
+          disabled={!isCurrentUserAlive}
         />
         <button className='chatButton' type="submit">Gửi</button>
       </form>
