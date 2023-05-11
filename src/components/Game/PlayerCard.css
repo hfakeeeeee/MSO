@@ -1,3 +1,8 @@
 .player-card.dead-player {
   background-color: rgb(184, 46, 46);
 }
+.player-card.wolf {
+  border-style: solid;
+  border-width: 5px;
+  border-color: rgb(54, 17, 164);
+}

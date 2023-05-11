@@ -24,8 +24,7 @@ const Game = () => {
     const [countdown, setCountdown] = useState(null);
     const [timeForm, setTimeForm] = useState('day');
     const [timeRemaining, setTimeRemaining] = useState(null);
-
-
+    const [nightAction, setNightAction] = useState(null);
 
     const countdownStarted = useRef(false);
     
@@ -36,7 +35,10 @@ const Game = () => {
         Object.keys(room.players).forEach((playerId) => {
           updates[`rooms/${roomId}/players/${playerId}/isVoted`] = null;
           updates[`rooms/${roomId}/players/${playerId}/vote`] = null;
+          updates[`rooms/${roomId}/players/${user.uid}/nightAction`] = null;
+          updates[`rooms/${roomId}/players/${playerId}/isWolfVoted`]= null;
         });
+        
       
         await update(ref(database), updates);
       };
@@ -58,25 +60,25 @@ const Game = () => {
 
       }, [room]);
       
-      const startDayTime = useCallback(() => {
+    const startDayTime = useCallback(() => {
         const startTime = Date.now();
         setTimeForm('day');
         update(ref(database), { [`rooms/${roomId}/timeRemaining`]: TIME_REMAINING_DAY, [`rooms/${roomId}/startTime`]: startTime, [`rooms/${roomId}/timeForm`]: 'day' });
       }, []);
       
-      const startVotingTime = useCallback(() => {
+    const startVotingTime = useCallback(() => {
         const startTime = Date.now();
         setTimeForm('voting');
         update(ref(database), { [`rooms/${roomId}/timeRemaining`]: TIME_REMAINING_VOTING, [`rooms/${roomId}/startTime`]: startTime, [`rooms/${roomId}/timeForm`]: 'voting' });
       }, []);
       
-      const startNightTime = useCallback(() => {
+    const startNightTime = useCallback(() => {
         const startTime = Date.now();
         setTimeForm('night');
         update(ref(database), { [`rooms/${roomId}/timeRemaining`]: TIME_REMAINING_NIGHT, [`rooms/${roomId}/startTime`]: startTime, [`rooms/${roomId}/timeForm`]: 'night' });
       }, []);
       
-      const eliminatePlayer = async () => {
+    const eliminatePlayer = async () => {
         if (!room || !room.players) return;
       
         // Đếm số người chơi còn sống
@@ -84,7 +86,13 @@ const Game = () => {
           (player) => player.live === "live"
         );
         const livePlayerCount = livePlayers.length;
-      
+
+      // Đếm số sói còn sống
+      const liveWolf = Object.values(room.players).filter(
+        (player) => player.live === "live" && player.role === "Ma sói"
+      );
+      const liveWolfCount = liveWolf.length;
+
         // Đếm phiếu bầu
         const voteCounts = {};
         Object.values(room.players).forEach((player) => {
@@ -92,6 +100,14 @@ const Game = () => {
             voteCounts[player.vote] = (voteCounts[player.vote] || 0) + 1;
           }
         });
+        // Đếm sói bầu
+        const wolfVoteCount = {}
+        Object.values(room.players).forEach((player) => {
+          if (player.nightAction && player.live === "live" && player.role === "Ma sói" ) {
+            wolfVoteCount[player.nightAction] = (wolfVoteCount[player.nightAction] || 0) + 1;
+          }
+        });
+        
       
         // Tìm người chơi có số phiếu bầu lớn nhất
         const maxVotes = Math.max(...Object.values(voteCounts));
@@ -99,32 +115,53 @@ const Game = () => {
           (playerId) => voteCounts[playerId] === maxVotes
         );
       
-        // Kiểm tra nếu chỉ có một người chơi nhận được ít nhất 50% số phiếu bầu
-        if (
-          maxVotedPlayers.length === 1 &&
-          maxVotes >= Math.ceil(livePlayerCount / 2)
-        ) {
-          const eliminatedPlayerId = maxVotedPlayers[0];
-          await update(ref(database), {
-            [`rooms/${roomId}/players/${eliminatedPlayerId}/live`]: "die",
-          });
+        // Tìm người chơi có số phiếu sói giết lớn nhất
+        const maxWolfVotes = Math.max(...Object.values(wolfVoteCount));
+        const maxWolfVotedPlayers = Object.keys(wolfVoteCount).filter(
+          (playerId) => wolfVoteCount[playerId] === maxWolfVotes
+        );
+        if (timeForm === "vote")
+        {
+          // Kiểm tra nếu chỉ có một người chơi nhận được ít nhất 50% số phiếu bầu
+          if (
+            maxVotedPlayers.length === 1 &&
+            maxVotes >= Math.ceil(livePlayerCount / 2)
+          ) {
+            const eliminatedPlayerId = maxVotedPlayers[0];
+            await update(ref(database), {
+              [`rooms/${roomId}/players/${eliminatedPlayerId}/live`]: "die",
+            });
+          }
+        } else if (timeForm === "night")
+        {
+          // Kiểm tra nếu chỉ có một người chơi nhận được ít nhất 50% số phiếu bầu
+          if (
+            maxWolfVotedPlayers.length === 1 &&
+            maxWolfVotes >= Math.ceil(liveWolfCount / 2)
+          ) {
+
+            const eliminatedPlayerId = maxWolfVotedPlayers[0];
+            await update(ref(database), {
+              [`rooms/${roomId}/players/${eliminatedPlayerId}/live`]: "die",
+            });
+          }
         }
+      
       };
-      
-      
+
     const getCountdownMessage = useCallback((secondsRemaining) => {
         return `Trò chơi sẽ bắt đầu sau ${secondsRemaining} giây.`;
       }, []);
 
  
-      useEffect(() => {
+    useEffect(() => {
         if (room && room.timeForm) {
           setTimeForm(room.timeForm);
         }
-      }, [room]);
+    }, [room]);
       
 
-      useEffect(() => {
+    useEffect(() => {
         const timeRemainingRef = ref(database, `rooms/${roomId}/timeRemaining`);
         const timeRemainingUnsubscribe = onValue(timeRemainingRef, (snapshot) => {
             const timeRemainingValue = snapshot.val();
@@ -154,7 +191,7 @@ const Game = () => {
     }, [room]);
 
       // Đếm ngược trò chơi bắt đầu
-      useEffect(() => {
+    useEffect(() => {
         if (countdown !== null) {
           const messageRef = ref(database, `rooms/${roomId}/messages`);
           const lastMessageQuery = query(messageRef, orderByChild("createdAt"), limitToLast(1));
@@ -178,10 +215,10 @@ const Game = () => {
       
           sendCountdown();
         }
-      }, [countdown, getCountdownMessage, roomId]);
+    }, [countdown, getCountdownMessage, roomId]);
       
       
-      useEffect(() => {
+    useEffect(() => {
         if (room && room.status === 'waiting' && !countdownStarted.current) {
           const numPlayers = Object.keys(room.players).length;
           if (numPlayers >= MIN_PLAYERS) {
@@ -199,7 +236,7 @@ const Game = () => {
             countdownStarted.current = false;
           }
         }
-      }, [room, startGame]);
+    }, [room, startGame]);
       
       
     useEffect(() => {
@@ -255,7 +292,7 @@ const Game = () => {
         };
       }, [timeRemaining]);
 
-      useEffect(() => {
+    useEffect(() => {
         if (timeRemaining === 0) {
             switch (timeForm) {
                 case "day":
@@ -270,6 +307,11 @@ const Game = () => {
                     startNightTime()
                     break;
                 case "night":
+                    eliminatePlayer();
+                    clearVotes();
+                    if (user && room && room.players) {
+                      setNightAction(null);
+                  }
                     startDayTime()
                     break;
                 default:
@@ -286,7 +328,7 @@ const Game = () => {
         return false;
     };
        
-const leaveRoom = async () => {
+    const leaveRoom = async () => {
     if (!user || !room) return;
   
     const roomPlayersRef = ref(database, `rooms/${roomId}/players`);
@@ -295,7 +337,7 @@ const leaveRoom = async () => {
     });
   
     window.location.href = "/lobby";
-  };
+    };
   
   if (!room) return <div>Loading...</div>;
   
@@ -323,6 +365,46 @@ const leaveRoom = async () => {
   
     await update(ref(database), updates);
   };
+
+  const handleNightAction = async (playerId) => {
+    const isPlayerAlive = room.players[playerId].live === "live";
+    const isPlayerWolf = room.players[playerId].role === "Ma sói";
+    if (playerId === user.uid || timeForm !== 'night' || !isCurrentUserAlive() || isPlayerWolf || !isPlayerAlive) {
+      return;
+    }
+  
+    switch (currentUserRole) {
+      case 'Ma sói':
+        // Nếu đã chọn nạn nhân, hủy chọn
+        if (nightAction === playerId) {
+          setNightAction(null);
+          // Xóa nạn nhân đã chọn trong cơ sở dữ liệu
+          await update(ref(database), {
+            [`rooms/${roomId}/players/${user.uid}/nightAction`]: null,
+            [`rooms/${roomId}/players/${playerId}/isWolfVoted/${user.uid}`]: null,
+          });
+        } else  {
+          setNightAction(playerId);
+          // Cập nhật nạn nhân đã chọn trong cơ sở dữ liệu
+          await update(ref(database), {
+            [`rooms/${roomId}/players/${user.uid}/nightAction`]: playerId,
+            [`rooms/${roomId}/players/${playerId}/isWolfVoted/${user.uid}`]: true,
+          });
+        }
+        break;
+      case 'Tiên Tri':
+        // Xử lý hành động của Tiên tri
+        break;
+      case 'Bảo vệ':
+        // Xử lý hành động của Bảo vệ
+        break;
+      case 'Phù thủy':
+        // Xử lý hành động của Phù thủy
+        break;
+      default:
+        break;
+    }
+  };
   
   const getCurrentUserRole = () => {
     if (user && room && room.players) {
@@ -333,6 +415,10 @@ const leaveRoom = async () => {
   };
 
 const currentUserRole = getCurrentUserRole();
+
+const isCurrentUserWolf = () => {
+  return currentUserRole === 'Ma sói';
+};
 
     return (
         <div className="game">
@@ -353,7 +439,9 @@ const currentUserRole = getCurrentUserRole();
                 </span>
             )}
         </div>
-            <PlayerGrid room={room} user={user} handleVote={handleVote} currentVote={currentVote} />
+            <PlayerGrid room={room} user={user} handleVote={timeForm === 'night' ? handleNightAction : handleVote} 
+                                                currentVote={timeForm ==='night' ? nightAction : currentVote}
+                                                timeForm = {timeForm} />
             <LeaveRoomButton leaveRoom={leaveRoom} />
 
             {isGameReady && (
