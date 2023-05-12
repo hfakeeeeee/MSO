@@ -1,8 +1,6 @@
 import React from "react";
 import PlayerCard from "./PlayerCard";
 
-import "./PlayerGrid.css";
-
 const PlayerGrid = ({ room, user, handleVote, currentVote, timeForm }) => {
   return (
     <div className="players-grid">
