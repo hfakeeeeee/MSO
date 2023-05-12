@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { auth, database } from '../../firebase';
 import { signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import { onValue, ref, push, set, child, update } from 'firebase/database'; // Thêm 'child' và 'update' vào đây
+import { onValue, ref, push, set, child, update } from 'firebase/database';
+import { BsPersonFill, BsPower } from 'react-icons/bs';
 
 import './Lobby.css';
 
@@ -11,6 +12,9 @@ const Lobby = () => {
   const [rooms, setRooms] = useState([]);
   const [newRoomName, setNewRoomName] = useState('');
   const [user, setUser] = useState(null);
+  const [showUserInfo, setShowUserInfo] = useState(false);
+  const [showCreateGameInput, setShowCreateGameInput] = useState(false);
+  const [newGameName, setNewGameName] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,12 +48,12 @@ const Lobby = () => {
         [user.uid]: {
           displayName: user.displayName || user.email,
           role: 0,
-          live: 'live',  // Trang thái sống chết của người chơi
-          status: 'waiting', // Chờ người chơi khác
+          live: 'live',
+          status: 'waiting',
         },
       },
-      status: 'waiting', // Trạng thái của phòng
-      timeForm: 'day', // trạng thái ngày hoặc đêm trong game
+      status: 'waiting',
+      timeForm: 'day',
       currentTurn: 0,
       maxPlayer:16, 
       minPlayer:8,
@@ -82,28 +86,96 @@ const Lobby = () => {
     navigate('/login');
   };
 
+  const toggleUserInfo = () => {
+    setShowUserInfo(!showUserInfo);
+  };
+
+  const toggleCreateGameInput = () => {
+    setShowCreateGameInput(!showCreateGameInput);
+  };
+
+  const createGame = () => {
+    if (!newGameName) return;
+  
+    const roomRef = ref(database, 'rooms');
+    const newRoom = {
+      name: newGameName,
+      players: {
+        [user.uid]: {
+          displayName: user.displayName || user.email,
+          role: 0,
+          live: 'live',
+          status: 'waiting',
+        },
+      },
+      status: 'waiting',
+      timeForm: 'day',
+      currentTurn: 0,
+      maxPlayer:16, 
+      minPlayer:8,
+    };
+  
+    push(roomRef, newRoom);
+
+    setNewGameName('');
+    setShowCreateGameInput(false);
+  };
+
+  const toggleInstructions = () => {
+    navigate("/instructions");
+  };
+
   return (
     <div className="lobby">
-      <h1>Lobby</h1>
-      {user && <p>Welcome, {user.displayName || user.email}!</p>}
-      <button onClick={handleLogout}>Logout</button>
-      <input    type="text"
-    placeholder="New room name"
-    value={newRoomName}
-    onChange={(e) => setNewRoomName(e.target.value)}
-  />
-  <button onClick={createRoom}>Create Room</button>
-  <h2>Rooms:</h2>
-  <ul className="room-list">
-    {rooms.map((room) => (
-      <li key={room.id} onClick={() => joinRoom(room.id)}>
-        {room.name}
-      </li>
-    ))}
-  </ul>
-</div>
-);
+      {user && (
+        <div className="user-info">
+          <BsPersonFill className="user-icon" onClick={toggleUserInfo} />
+          {showUserInfo && (
+            <div className="user-info-popup">
+              <p>{user.displayName || user.email}</p>
+            </div>
+          )}
+          <BsPower className="logout-icon" onClick={handleLogout} />
+        </div>
+      )}
+      <div class="button-container">
+        <button className="quick-play" onClick={createRoom}>
+          Quick Play
+        </button>
+        <button className="instruction-button" onClick={toggleInstructions}>
+          Instructions
+        </button>
+      </div>
+      <div className="create-game-container">
+        <button className="create-game-button" onClick={toggleCreateGameInput}>
+          Create Game
+        </button>
+        {showCreateGameInput && (
+          <div className="create-game-popup">
+            <input
+              type="text"
+              placeholder="Enter game name"
+              value={newGameName}
+              onChange={(e) => setNewGameName(e.target.value)}
+            />
+            <button className="create-game-button" onClick={createGame}>
+              Create
+            </button>
+          </div>
+        )}
+      </div>
+      <div class="room-list-container">
+        <h2>Rooms:</h2>
+        <ul className="room-list">
+          {rooms.slice(-5).map((room) => (
+            <li key={room.id} onClick={() => joinRoom(room.id)}>
+              {room.name}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
 };
 
 export default Lobby;
-       

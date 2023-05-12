@@ -1,9 +1,205 @@
-/* src/components/Lobby/Lobby.css */
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap");
+
 .lobby {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100vh;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  background-image: url('bg-5.png');
+  background-size: cover;
+  background-position: center center;
+}
+
+h2 {
+  margin-top: 40px;
+  font-size: 24px;
+  color: white;
+  font-family: "Outfit", sans-serif;
+}
+
+p {
+  margin-bottom: 10px;
+  font-size: 18px;
+  color: white;
+  font-family: "Outfit", sans-serif;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.user-icon {
+  font-size: 32px;
+  color: white;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.user-info-popup {
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: 70px;
+  right: 20px;
+  padding: 10px;
+  font-size: 18px;
+  z-index: 1;
+  width: 200px;
+  text-align: center;
+}
+
+.logout-icon {
+  font-size: 32px;
+  color: white;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.button-container {
+  display: flex;
+  width: 300px;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  margin-top: 200px;
+}
+
+.quick-play, .instruction-button {
+  width: 140px;
+  height: 50px;
+  background-color: #B8A3E9;
+  color: white;
+  border: none;
+  border-radius: 81px;
+  font-family: "Outfit", sans-serif;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.create-game-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.create-game-button {
+  width: 140px;
+  height: 50px;
+  color: white;
+  border: 2px solid #B8A3E9;
+  border-radius: 81px;
+  font-family: "Outfit", sans-serif;
+  font-size: 18px;
+  cursor: pointer;
+  background: none;
+}
+
+.create-game-popup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  font-size: 18px;
+  z-index: 1;
+  width: 200px;
+  text-align: center;
+}
+
+.create-game-popup input {
+  margin-bottom: 10px;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #B8A3E9;
+}
+
+.room-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 200px;
+  overflow-y: scroll;
+  width: 100%;
+}
+
+.room-list li {
+  cursor: pointer;
+  margin-bottom: 5px;
+  padding: 5px;
+  border-radius: 5px;
+  color: white;
+  font-family: "Outfit", sans-serif;
+  font-size: 18px;
+}
+
+.room-list li:last-child {
+  margin-bottom: 0;
+}
+
+.room-list li:hover {
+  background-color: #8F6AFF;
+}
+
+.instruction-button:hover, .quick-play:hover {
+  background-color: #8F6AFF;
+}
+
+.create-game-button:hover {
+  background-color: #B8A3E9;
+  color: white;
+}
+
+
+@media (max-width: 768px) {
+  h2 {
+    font-size: 20px;
   }
-  
+
+  p {
+    font-size: 16px;
+  }
+
+  .user-icon {
+    font-size: 28px;
+  }
+
+  .logout-icon {
+    font-size: 28px;
+  }
+
+  .button-container {
+    width: 200px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .quick-play, .instruction-button, .create-game-button {
+    width: 120px;
+    height: 40px;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .create-game-popup {
+    width: 180px;
+  }
+
+  .create-game-popup input {
+    width: 100%;
+  }
+
+  .create-game-container {
+    width: 100%;
+    justify-content: center;
+  }
+}
