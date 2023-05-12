@@ -13,8 +13,15 @@
   background-position: center center;
 }
 
+.inside-lobby {
+  display: flex;
+  flex-direction: column;
+  margin-left: 350px;
+  align-items: center;
+}
+
 h2 {
-  margin-top: 40px;
+  margin-top: 20px;
   font-size: 24px;
   color: white;
   font-family: "Outfit", sans-serif;
@@ -23,7 +30,7 @@ h2 {
 p {
   margin-bottom: 10px;
   font-size: 18px;
-  color: white;
+  color: #B8A3E9;
   font-family: "Outfit", sans-serif;
 }
 
@@ -68,7 +75,7 @@ p {
   width: 300px;
   justify-content: space-between;
   margin-bottom: 20px;
-  margin-top: 200px;
+  margin-top: 120px;
 }
 
 .quick-play, .instruction-button {
@@ -85,15 +92,55 @@ p {
 
 .create-game-container {
   display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .create-game-button {
   width: 140px;
   height: 50px;
   color: white;
-  border: 2px solid #B8A3E9;
+  border: 2px solid #b8a3e9;
+  border-radius: 81px;
+  font-family: "Outfit", sans-serif;
+  font-size: 18px;
+  cursor: pointer;
+  background: none;
+  margin-top: 10px; /* Added margin-top */
+}
+
+.create-game-popup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 18px;
+  z-index: 1;
+  width: 220px;
+  text-align: center;
+  margin-top: 10px;
+  position: relative;
+}
+
+.create-game-popup input {
+  margin-bottom: 20px;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #b8a3e9;
+  width: 100%;
+  text-align: center;
+  height: 20px;
+  margin: 0 auto; /* Add margin auto to center horizontally */
+}
+
+.create-button {
+  margin-top: 15px;
+  width: 140px;
+  height: 40px;
+  color: white;
+  border: 2px solid #b8a3e9;
   border-radius: 81px;
   font-family: "Outfit", sans-serif;
   font-size: 18px;
@@ -101,35 +148,22 @@ p {
   background: none;
 }
 
-.create-game-popup {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.room-list-container {
+  flex-grow: 1;
+  height: 200px;
   justify-content: center;
-  background-color: #fff;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  font-size: 18px;
-  z-index: 1;
-  width: 200px;
-  text-align: center;
-}
-
-.create-game-popup input {
-  margin-bottom: 10px;
-  padding: 5px;
-  border-radius: 5px;
-  border: 1px solid #B8A3E9;
+  position: relative; /* Add position relative */
 }
 
 .room-list {
   list-style: none;
   margin: 0;
   padding: 0;
-  max-height: 200px;
-  overflow-y: scroll;
   width: 100%;
+  overflow: hidden;
+  text-align: center; /* Center the text horizontally */
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
 }
 
 .room-list li {
@@ -140,6 +174,9 @@ p {
   color: white;
   font-family: "Outfit", sans-serif;
   font-size: 18px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .room-list li:last-child {
@@ -147,7 +184,7 @@ p {
 }
 
 .room-list li:hover {
-  background-color: #8F6AFF;
+  background-color: #FFC299;
 }
 
 .instruction-button:hover, .quick-play:hover {
@@ -158,7 +195,6 @@ p {
   background-color: #B8A3E9;
   color: white;
 }
-
 
 @media (max-width: 768px) {
   h2 {
