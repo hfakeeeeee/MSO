@@ -1,25 +1,25 @@
 // src/components/Lobby/Lobby.js
-import React, { useEffect, useState } from 'react';
-import { auth, database } from '../../firebase';
-import { signOut } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';
-import { onValue, ref, push, set, child, update } from 'firebase/database';
-import { BsPersonFill, BsPower } from 'react-icons/bs';
+import React, { useEffect, useState } from "react";
+import { auth, database } from "../../firebase";
+import { signOut } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import { onValue, ref, push, set, child, update } from "firebase/database";
+import { BsPersonFill, BsPower } from "react-icons/bs";
 
-import './Lobby.css';
+import "./Lobby.css";
 
 const Lobby = () => {
   const [rooms, setRooms] = useState([]);
-  const [newRoomName, setNewRoomName] = useState('');
+  const [newRoomName, setNewRoomName] = useState("");
   const [user, setUser] = useState(null);
   const [showUserInfo, setShowUserInfo] = useState(false);
   const [showCreateGameInput, setShowCreateGameInput] = useState(false);
-  const [newGameName, setNewGameName] = useState('');
+  const [newGameName, setNewGameName] = useState("");
   const [expandRoomList, setExpandRoomList] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const roomRef = ref(database, 'rooms');
+    const roomRef = ref(database, "rooms");
     const unsubscribe = onValue(roomRef, (snapshot) => {
       const roomsData = snapshot.val();
       const roomList = [];
@@ -41,18 +41,20 @@ const Lobby = () => {
 
   const joinRoom = async (roomId = null) => {
     if (!user) return;
-  
+
     if (roomId) {
       navigate(`/game/${roomId}`);
       return;
     }
-  
-    const availableRooms = rooms.filter((room) => Object.keys(room.players).length < room.maxPlayer);
-  
+
+    const availableRooms = rooms.filter(
+      (room) => Object.keys(room.players).length < room.maxPlayer
+    );
+
     if (availableRooms.length > 0) {
       const randomRoomIndex = Math.floor(Math.random() * availableRooms.length);
       const randomRoom = availableRooms[randomRoomIndex];
-  
+
       navigate(`/game/${randomRoom.id}`);
     } else {
       createRoom();
@@ -61,43 +63,43 @@ const Lobby = () => {
 
   const createRoom = () => {
     if (!newRoomName) return;
-  
-    const roomRef = ref(database, 'rooms');
+
+    const roomRef = ref(database, "rooms");
     const newRoom = {
       name: newRoomName,
       players: {
         [user.uid]: {
           displayName: user.displayName || user.email,
           role: 0,
-          live: 'live',
-          status: 'waiting',
+          live: "live",
+          status: "waiting",
         },
       },
-      status: 'waiting',
-      timeForm: 'day',
+      status: "waiting",
+      timeForm: "day",
       currentTurn: 0,
       maxPlayer: 16,
       minPlayer: 8,
     };
-  
+
     push(roomRef, newRoom);
-  
-    setNewRoomName('');
+
+    setNewRoomName("");
     joinRoom(); // Join the newly created room
   };
-  
+
   const joinRandomRoom = () => {
     if (!user || rooms.length === 0) return;
-  
+
     const randomRoomIndex = Math.floor(Math.random() * rooms.length);
     const randomRoom = rooms[randomRoomIndex];
-  
+
     navigate(`/game/${randomRoom.id}`);
   };
 
   const handleLogout = async () => {
     await signOut(auth);
-    navigate('/login');
+    navigate("/login");
   };
 
   const toggleUserInfo = () => {
@@ -110,28 +112,28 @@ const Lobby = () => {
 
   const createGame = () => {
     if (!newGameName) return;
-  
-    const roomRef = ref(database, 'rooms');
+
+    const roomRef = ref(database, "rooms");
     const newRoom = {
       name: newGameName,
       players: {
         [user.uid]: {
           displayName: user.displayName || user.email,
           role: 0,
-          live: 'live',
-          status: 'waiting',
+          live: "live",
+          status: "waiting",
         },
       },
-      status: 'waiting',
-      timeForm: 'day',
+      status: "waiting",
+      timeForm: "day",
       currentTurn: 0,
       maxPlayer: 16,
       minPlayer: 8,
     };
-  
+
     push(roomRef, newRoom);
-  
-    setNewGameName('');
+
+    setNewGameName("");
     setShowCreateGameInput(false);
   };
 
@@ -152,17 +154,20 @@ const Lobby = () => {
           <BsPower className="logout-icon" onClick={handleLogout} />
         </div>
       )}
-      <div className = "inside-lobby">
+      <div className="inside-lobby">
         <div class="button-container">
-        <button className="quick-play" onClick={() => joinRandomRoom()}>
-          Quick Play
-        </button>
+          <button className="quick-play" onClick={() => joinRandomRoom()}>
+            Quick Play
+          </button>
           <button className="instruction-button" onClick={toggleInstructions}>
             Instructions
           </button>
         </div>
         <div className="create-game-container">
-          <button className="create-game-button" onClick={toggleCreateGameInput}>
+          <button
+            className="create-game-button"
+            onClick={toggleCreateGameInput}
+          >
             Create Game
           </button>
           {showCreateGameInput && (

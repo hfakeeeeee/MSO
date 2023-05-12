@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { auth } from "../../firebase";
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -28,33 +31,33 @@ const Login = () => {
 
   return (
     <div className="login">
-        <h1>LOGIN</h1>
-        <form onSubmit={handleLogin}>
-          <div className="form-group">
-            <input
-              type="email"
-              placeholder="username"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="form-group">
-            <input
-              type="password"
-              placeholder="********"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <div className="button-group">
-            <button className="login-btn" type="submit">
-              Sign in
-            </button>
-            <button className="signup-btn" onClick={goToRegister}>
-              Sign up
-            </button>
-          </div>
-        </form>
+      <h1>LOGIN</h1>
+      <form onSubmit={handleLogin}>
+        <div className="form-group">
+          <input
+            type="email"
+            placeholder="username"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <input
+            type="password"
+            placeholder="********"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <div className="button-group">
+          <button className="login-btn" type="submit">
+            Sign in
+          </button>
+          <button className="signup-btn" onClick={goToRegister}>
+            Sign up
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

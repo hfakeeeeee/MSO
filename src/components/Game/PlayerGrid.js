@@ -1,5 +1,7 @@
-import React from 'react';
-import PlayerCard from './PlayerCard';
+import React from "react";
+import PlayerCard from "./PlayerCard";
+
+import "./PlayerGrid.css";
 
 const PlayerGrid = ({ room, user, handleVote, currentVote, timeForm }) => {
   return (
@@ -8,9 +10,10 @@ const PlayerGrid = ({ room, user, handleVote, currentVote, timeForm }) => {
         const playerId = room.players ? Object.keys(room.players)[index] : null;
         let playerData = room.players && room.players[playerId];
         const isCurrentUser = user && user.uid === playerId;
-        const isCurrentUserWolf = user && room.players?.[user.uid]?.role === 'Ma sói';
-        const isWolf = user && room.players?.[playerId]?.role === 'Ma sói';
-        const bothWolf = isWolf && room.players?.[user.uid]?.role === 'Ma sói';
+        const isCurrentUserWolf =
+          user && room.players?.[user.uid]?.role === "Ma sói";
+        const isWolf = user && room.players?.[playerId]?.role === "Ma sói";
+        const bothWolf = isWolf && room.players?.[user.uid]?.role === "Ma sói";
 
         return (
           <PlayerCard
@@ -22,11 +25,11 @@ const PlayerGrid = ({ room, user, handleVote, currentVote, timeForm }) => {
             handleVote={handleVote}
             room={room}
             currentVote={currentVote}
-            players = {room.players}
-            timeForm = {timeForm}
-            bothWolf = {bothWolf}
-            isCurrentUserWolf={isCurrentUserWolf}  
-            />
+            players={room.players}
+            timeForm={timeForm}
+            bothWolf={bothWolf}
+            isCurrentUserWolf={isCurrentUserWolf}
+          />
         );
       })}
     </div>

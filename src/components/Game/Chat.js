@@ -1,12 +1,12 @@
 // src/components/Game/Chat.js
-import React, { useState, useEffect } from 'react';
-import { database } from '../../firebase';
-import { ref, onValue, off, push } from 'firebase/database';
-import './Chat.css';
+import React, { useState, useEffect } from "react";
+import { database } from "../../firebase";
+import { ref, onValue, off, push } from "firebase/database";
+import "./Chat.css";
 
 const Chat = ({ roomId, user, isCurrentUserAlive }) => {
   const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState('');
+  const [newMessage, setNewMessage] = useState("");
 
   useEffect(() => {
     const messagesRef = ref(database, `rooms/${roomId}/messages`);
@@ -35,7 +35,7 @@ const Chat = ({ roomId, user, isCurrentUserAlive }) => {
     const messagesRef = ref(database, `rooms/${roomId}/messages`);
     await push(messagesRef, message);
 
-    setNewMessage('');
+    setNewMessage("");
   };
 
   return (
@@ -48,7 +48,7 @@ const Chat = ({ roomId, user, isCurrentUserAlive }) => {
           </div>
         ))}
       </div>
-      <form className='chatForm' onSubmit={sendMessage} >
+      <form className="chatForm" onSubmit={sendMessage}>
         <input
           type="text"
           value={newMessage}
@@ -56,7 +56,9 @@ const Chat = ({ roomId, user, isCurrentUserAlive }) => {
           placeholder="Nhập tin nhắn..."
           disabled={!isCurrentUserAlive}
         />
-        <button className='chatButton' type="submit">Gửi</button>
+        <button className="chatButton" type="submit">
+          Gửi
+        </button>
       </form>
     </div>
   );

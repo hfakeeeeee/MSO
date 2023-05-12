@@ -63,14 +63,14 @@ input {
   align-items: center;
   justify-content: center;
   background-color: #d1b38d;
-  color: #FDF0DE;
+  color: #fdf0de;
   margin-bottom: 0px;
 }
 
 .login-link {
   font-size: 16px;
   font-family: "Outfit", sans-serif;
-  color: #F3DCBC;
+  color: #f3dcbc;
   text-align: center;
   cursor: pointer;
 }
