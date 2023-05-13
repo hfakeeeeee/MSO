@@ -49,7 +49,7 @@ const Chat = ({ roomId, user, isCurrentUserAlive }) => {
         ))}
       </div>
       <form className="chatForm" onSubmit={sendMessage}>
-        <input
+        <input className="chat-input"
           type="text"
           value={newMessage}
           onChange={(event) => setNewMessage(event.target.value)}

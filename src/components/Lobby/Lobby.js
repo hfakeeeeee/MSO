@@ -38,32 +38,6 @@ const Lobby = () => {
     };
   }, []);
 
-  const createRoom = () => {
-    if (!newRoomName) return;
-
-    const roomRef = ref(database, "rooms");
-    const newRoom = {
-      name: newRoomName,
-      players: {
-        [user.uid]: {
-          displayName: user.displayName || user.email,
-          role: 0,
-          live: "live",
-          status: "waiting",
-        },
-      },
-      status: "waiting",
-      timeForm: "day",
-      currentTurn: 0,
-      maxPlayer: 16,
-      minPlayer: 8,
-    };
-
-    push(roomRef, newRoom);
-
-    setNewRoomName("");
-  };
-
   const joinRoom = async (roomId) => {
     if (!user) return;
     const roomRef = ref(database, `rooms/${roomId}`);
@@ -138,7 +112,7 @@ const Lobby = () => {
       )}
       <div className="inside-lobby">
         <div class="button-container">
-          <button className="quick-play" onClick={createRoom}>
+          <button className="quick-play" onClick={createGame}>
             Quick Play
           </button>
           <button className="instruction-button" onClick={toggleInstructions}>
@@ -154,7 +128,7 @@ const Lobby = () => {
           </button>
           {showCreateGameInput && (
             <div className="create-game-popup">
-              <input
+              <input className = "create-game-input"
                 type="text"
                 placeholder="Enter game name"
                 value={newGameName}

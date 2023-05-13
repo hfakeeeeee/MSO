@@ -31,7 +31,7 @@ const Register = () => {
       <form onSubmit={handleRegister}>
         <div className="form-container">
           <div className="form-group">
-            <input
+            <input className="register-input"
               type="email"
               placeholder="Email"
               value={email}
@@ -39,7 +39,7 @@ const Register = () => {
             />
           </div>
           <div className="form-group">
-            <input
+            <input className="register-input"
               type="password"
               placeholder="Password"
               value={password}

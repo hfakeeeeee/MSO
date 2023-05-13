@@ -125,14 +125,16 @@ p {
   position: relative;
 }
 
-.create-game-popup input {
-  margin-bottom: 20px;
+.create-game-input {
+  background-color: rgba(255, 255, 255, 0.7);
+  font-size: 20px;
+  font-family: "Outfit", sans-serif;
   padding: 5px;
-  border-radius: 5px;
-  border: 1px solid #b8a3e9;
+  border-radius: 15px;
+  border: 2px solid #b8a3e9;
   width: 100%;
   text-align: center;
-  height: 20px;
+  height: 30px;
   margin: 0 auto; /* Add margin auto to center horizontally */
 }
 

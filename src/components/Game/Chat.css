@@ -1,15 +1,17 @@
 /* src/components/Game/Chat.css */
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap");
+
 .chat {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 400px;
-  width: 100%;
-  max-width: 500px;
+  height: 575px;
+  width: 250px;
   margin: 0 auto;
   border: 1px solid #ccc;
   border-radius: 5px;
-  background-color: #f8f8f8;
+  background-color: rgba(255, 255, 255, 0.7);
+  margin-top: 3px
 }
 
 .messages {
@@ -20,6 +22,7 @@
 
 .message {
   margin-bottom: 5px;
+  font-size: 14px;
 }
 
 .chatForm {
@@ -28,7 +31,7 @@
   border-top: 1px solid #ccc;
 }
 
-input {
+chat-input {
   flex-grow: 1;
   padding: 5px;
   border: 1px solid #ccc;

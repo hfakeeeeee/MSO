@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { auth, database } from "../../firebase";
+import { CiLogout } from "react-icons/ci";
 import {
   ref,
   onValue,
@@ -354,12 +355,12 @@ const Game = () => {
 
   const leaveRoom = async () => {
     if (!user || !room) return;
-
+  
     const roomPlayersRef = ref(database, `rooms/${roomId}/players`);
     await update(roomPlayersRef, {
       [user.uid]: null,
     });
-
+  
     window.location.href = "/lobby";
   };
 
@@ -454,44 +455,49 @@ const Game = () => {
   const currentUserRole = getCurrentUserRole();
 
   const isCurrentUserWolf = () => {
-    return currentUserRole === "Ma sói";
+    return currentUserRole === "Tiên Tri";
   };
 
   return (
     <div className="game">
-      <div className="time-form">
-        {timeForm === "day" && (
-          <span>Ban ngày: Thảo luận ({timeRemaining} giây còn lại)</span>
-        )}
-        {timeForm === "voting" && (
-          <span>Bầu chọn ({timeRemaining} giây còn lại)</span>
-        )}
-        {timeForm === "night" && (
-          <span>Ban đêm: Thao tác ({timeRemaining} giây còn lại)</span>
-        )}
+      <div className="timer-grid">
+        <div className="leave-room-button">
+          <CiLogout className="leave-icon" onClick={leaveRoom} />
+        </div>
+        <div className="time-form">
+          {timeForm === "day" && (
+            <span>Ban ngày: Thảo luận ({timeRemaining} giây còn lại)</span>
+          )}
+          {timeForm === "voting" && (
+            <span>Bầu chọn ({timeRemaining} giây còn lại)</span>
+          )}
+          {timeForm === "night" && (
+            <span>Ban đêm: Thao tác ({timeRemaining} giây còn lại)</span>
+          )}
+        </div>
+        <PlayerGrid
+          room={room}
+          user={user}
+          handleVote={timeForm === "night" ? handleNightAction : handleVote}
+          currentVote={timeForm === "night" ? nightAction : currentVote}
+          timeForm={timeForm}
+        />
       </div>
-      <PlayerGrid
-        room={room}
-        user={user}
-        handleVote={timeForm === "night" ? handleNightAction : handleVote}
-        currentVote={timeForm === "night" ? nightAction : currentVote}
-        timeForm={timeForm}
-      />
-      <LeaveRoomButton leaveRoom={leaveRoom} />
-
       {isGameReady && (
         <div className="game-ready">Trò chơi sẵn sàng bắt đầu!</div>
       )}
       {currentUserRole && (
         <div className="current-role">Vai trò của bạn: {currentUserRole}</div>
       )}
-      {user && room && (
-        <Chat
-          roomId={room.id}
-          user={user}
-          isCurrentUserAlive={isCurrentUserAlive()}
-        />
-      )}
+      <div className="chat-game">
+        {user && room && (
+          <Chat
+            roomId={room.id}
+            user={user}
+            isCurrentUserAlive={isCurrentUserAlive()}
+          />
+        )}
+      </div>
     </div>
   );
 };

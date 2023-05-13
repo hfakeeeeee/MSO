@@ -28,7 +28,7 @@ h1 {
   width: 100%;
 }
 
-input {
+.login-input {
   padding: 20px;
   margin-bottom: 20px;
   margin-right: 120vh;
