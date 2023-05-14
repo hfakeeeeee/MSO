@@ -8,7 +8,7 @@
   height: 575px;
   width: 250px;
   margin: 0 auto;
-  border: 1px solid #ccc;
+  border: 2px solid #b8a3e9;
   border-radius: 5px;
   background-color: rgba(255, 255, 255, 0.7);
   margin-top: 3px
@@ -31,16 +31,13 @@
   border-top: 1px solid #ccc;
 }
 
-chat-input {
-  flex-grow: 1;
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  outline: none;
+.chat-input {
+  font-size: 14px;
+  font-family: "Outfit", sans-serif;
+  border: none;
 }
 
 .chatButton {
-  margin-left: 10px;
   padding: 5px 10px;
   border: 1px solid #ccc;
   border-radius: 3px;

@@ -355,12 +355,12 @@ const Game = () => {
 
   const leaveRoom = async () => {
     if (!user || !room) return;
-  
+
     const roomPlayersRef = ref(database, `rooms/${roomId}/players`);
     await update(roomPlayersRef, {
       [user.uid]: null,
     });
-  
+
     window.location.href = "/lobby";
   };
 

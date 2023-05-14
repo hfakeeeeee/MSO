@@ -1,6 +1,55 @@
-.player-card.dead-player {
-  background-color: rgb(184, 46, 46);
+.player-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
 }
+
+.player-rectangle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  background-color: rgba(255, 255, 255, 0.5);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Adjusted to create space between player number and name */
+  padding: 0 8px; /* Added padding for better spacing */
+}
+
+.player-number {
+  margin-right: 7px;
+  font-weight: bold;
+}
+
+.player-name {
+  font-weight: bold;
+}
+
+.player-card.current-user {
+  color: black;
+  background-image: url("day_5.jpg");
+  background-size: cover;
+  background-position: center center;
+}
+
+.player-card.dead-player {
+  color: white;
+  background-color: rgb(184, 46, 46, 0.6);
+  background-image: url("dead_2.png");
+  background-size: cover;
+  background-position: center center;
+}
+
 .player-card.wolf {
   border-style: solid;
   border-width: 5px;

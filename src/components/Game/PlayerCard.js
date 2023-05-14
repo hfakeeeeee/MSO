@@ -17,24 +17,16 @@ const PlayerCard = ({ playerId, playerData, isCurrentUser, handleVote, room, cur
 
   return (
     <div
-    className={`player-card ${!isCurrentUser && playerData ? 'clickable' : ''} ${!isAlive ? 'dead-player' : ''} ${isCurrentUser&&isAlive ? 'current-user' : ''}  ${ bothWolf ? 'wolf' : ''}`}
-    onClick={!isCurrentUser && playerData ? () => handleVote(playerId) : undefined}>
-      
-      <div className="player-number">{playerIndex + 1}</div>
-      <div className="player-name">
-        {playerName}
-        <div> (  {timeForm ==='night' && isCurrentUserWolf ? voteWolfCount : voteCount } votes) </div>
-
-
-        {playerData && isCurrentUser && (
-          <p>Đang bầu: {room.players[currentVote]?.displayName || room.players[currentVote]?.email || 'Chưa bầu'}</p>
-        )}
-        {playerData && !isCurrentUser &&  bothWolf &&  (
-          <p>Đang bầu: {room.players[timeForm !== "night"? currentUserVote: currentWolfVote]?.displayName || room.players[currentUserVote]?.email || 'Chưa bầu'}</p>
-        )}
-        {playerData && !isCurrentUser &&  !bothWolf && (
-          <p>Đang bầu: {room.players[currentUserVote]?.displayName || room.players[currentUserVote]?.email || 'Chưa bầu'}</p>
-        )}
+      className={`player-card ${!isCurrentUser && playerData ? 'clickable' : ''} ${!isAlive ? 'dead-player' : ''} ${isCurrentUser && isAlive ? 'current-user' : ''} ${bothWolf ? 'wolf' : ''}`}
+      onClick={!isCurrentUser && playerData ? () => handleVote(playerId) : undefined}
+    >
+      <div className="player-rectangle">
+        <div className="player-number">{playerIndex + 1}.</div>
+        <div className="player-name">{playerName}</div> {/* Player name to the right of player number */}
+      </div>
+      <div className="player-votes">
+        <div> ({timeForm === 'night' && isCurrentUserWolf ? voteWolfCount : voteCount} votes) </div>
+        {/* Rest of the code */}
       </div>
     </div>
   );
