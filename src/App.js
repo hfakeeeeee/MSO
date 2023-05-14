@@ -7,21 +7,34 @@ import Game from './components/Game/Game';
 import Results from './components/Results/Results';
 import Instructions from './components/Instructions/Instructions';
 import Register from './components/Login/Register';
+import ProtectedRoute from './components/ProtectedRoute';
+import { useAuth, AuthProvider } from './AuthContext';
 
 function App() {
+  const { currentUser } = useAuth();
+
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/lobby" element={<Lobby />} />
-        <Route path="/game/:roomId" element={<Game />} />
-        <Route path="/results" element={<Results />} />
-        <Route path="/instructions" element={<Instructions />} />
+        <Route path="/lobby" element={currentUser ? <Lobby /> : <Login />} />
+        <Route path="/game/:roomId" element={currentUser ? <Game /> : <Login />} />
+        <Route path="/results" element={currentUser ? <Results /> : <Login />} />
+        <Route path="/instructions" element={currentUser ? <Instructions /> : <Login />} />
       </Routes>
     </Router>
   );
 }
 
-export default App;
+// This is the component that gets rendered in your root index.js file
+function Root() {
+  return (
+    <AuthProvider>
+      <App />
+    </AuthProvider>
+  );
+}
+
+export default Root;

@@ -20,6 +20,9 @@ import Chat from "./Chat";
 import PlayerGrid from "./PlayerGrid";
 import LeaveRoomButton from "./LeaveRoomButton";
 import "./Game.css";
+import { Alert } from "antd";
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 const MIN_PLAYERS = 3;
 const MAX_PLAYERS = 16;
@@ -37,9 +40,31 @@ const Game = () => {
   const [timeForm, setTimeForm] = useState("day");
   const [timeRemaining, setTimeRemaining] = useState(null);
   const [nightAction, setNightAction] = useState(null);
+  const [winner, setWinner] = useState(null);
+  const [countdownclose, setCountdownclose] = useState(10);  // 10 is the initial countdown time in seconds
 
   const countdownStarted = useRef(false);
 
+  let seerResult = "Không phải sói"; 
+
+  const deleteRoom = useCallback(async () => {
+    await update(ref(database), {
+      [`rooms/${roomId}`]: null,
+    });
+  }, []);
+
+  useEffect(() => {
+    if (countdownclose > 0 && !!winner) {
+      const timer = setTimeout(() => {
+        setCountdownclose(countdownclose - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else if (countdownclose === 0 && !!winner) {
+      deleteRoom();
+    }
+  }, [countdownclose, winner]);
+  
+  
   const clearVotes = async () => {
     if (!room || !room.players) return;
 
@@ -103,7 +128,7 @@ const Game = () => {
 
   const eliminatePlayer = async () => {
     if (!room || !room.players) return;
-
+    
     // Đếm số người chơi còn sống
     const livePlayers = Object.values(room.players).filter(
       (player) => player.live === "live"
@@ -116,23 +141,54 @@ const Game = () => {
     );
     const liveWolfCount = liveWolf.length;
 
-    // Đếm phiếu bầu
+    
     const voteCounts = {};
+    let protectPlayer = "";
+    let seeredPlayer = "";
+    let witchKillPlayer = "";
     Object.values(room.players).forEach((player) => {
+      // Đếm phiếu bầu buổi sáng
       if (player.vote && player.live === "live") {
         voteCounts[player.vote] = (voteCounts[player.vote] || 0) + 1;
       }
+
+      // Xác định người được bảo vệ
+      if (player.live === "live" && player.role === "Bảo vệ" && player.nightAction) {
+        protectPlayer = player.nightAction;
+      }
+
+      // Xác định người bị tiên tri soi
+      if (player.live === "live" && player.role === "Tiên tri" && player.nightAction) {
+        seeredPlayer = player.nightAction;
+      }
+
+      // Xác định người bị phù thủy đầu độc
+      if (player.live === "live" && player.role === "Phù thủy" && player.nightAction) {
+        witchKillPlayer = player.nightAction;
+        if (witchKillPlayer!== null)
+        {
+          update(ref(database), {
+            [`rooms/${roomId}/players/${witchKillPlayer}/live`]: "die",
+          });
+          // checkWinCondition(room.players,witchKillPlayer,timeForm);
+        }
+      }
+
     });
+
     // Đếm sói bầu
     const wolfVoteCount = {};
     Object.values(room.players).forEach((player) => {
       if (
-        player.nightAction &&
         player.live === "live" &&
-        player.role === "Ma sói"
+        player.role === "Ma sói" && player.nightAction
       ) {
         wolfVoteCount[player.nightAction] =
           (wolfVoteCount[player.nightAction] || 0) + 1;
+        if (player.userID === seeredPlayer)
+        {
+          seerResult = "Sói";
+        }
       }
     });
 
@@ -142,12 +198,14 @@ const Game = () => {
       (playerId) => voteCounts[playerId] === maxVotes
     );
 
+
     // Tìm người chơi có số phiếu sói giết lớn nhất
     const maxWolfVotes = Math.max(...Object.values(wolfVoteCount));
     const maxWolfVotedPlayers = Object.keys(wolfVoteCount).filter(
       (playerId) => wolfVoteCount[playerId] === maxWolfVotes
     );
-    if (timeForm === "vote") {
+    
+    if (timeForm === "voting") {
       // Kiểm tra nếu chỉ có một người chơi nhận được ít nhất 50% số phiếu bầu
       if (
         maxVotedPlayers.length === 1 &&
@@ -157,17 +215,28 @@ const Game = () => {
         await update(ref(database), {
           [`rooms/${roomId}/players/${eliminatedPlayerId}/live`]: "die",
         });
+        // checkWinCondition(room.players,eliminatedPlayerId,timeForm);
       }
     } else if (timeForm === "night") {
-      // Kiểm tra nếu chỉ có một người chơi nhận được ít nhất 50% số phiếu bầu
+      if (seerResult === "Sói" && isCurrentUserSeer())
+      {
+        alert("Người bạn soi là sói");
+      } else if (isCurrentUserSeer()) alert("Người bạn soi không phải sói");
+
+      // Kiểm tra nếu chỉ có một người chơi nhận được ít nhất 50% số phiếu bầu từ sói
       if (
         maxWolfVotedPlayers.length === 1 &&
         maxWolfVotes >= Math.ceil(liveWolfCount / 2)
       ) {
         const eliminatedPlayerId = maxWolfVotedPlayers[0];
-        await update(ref(database), {
-          [`rooms/${roomId}/players/${eliminatedPlayerId}/live`]: "die",
-        });
+        // Kiểm tra xem sói có cắn trúng người được bảo vệ không
+        if (protectPlayer !== eliminatedPlayerId)
+        {
+          await update(ref(database), {
+            [`rooms/${roomId}/players/${eliminatedPlayerId}/live`]: "die",
+          });
+          // checkWinCondition(room.players,eliminatedPlayerId,timeForm);
+        }
       }
     }
   };
@@ -329,6 +398,7 @@ const Game = () => {
           if (user && room && room.players) {
             setCurrentVote(null);
           }
+          checkWinCondition();
           startNightTime();
           break;
         case "night":
@@ -337,6 +407,7 @@ const Game = () => {
           if (user && room && room.players) {
             setNightAction(null);
           }
+          checkWinCondition();
           startDayTime();
           break;
         default:
@@ -401,10 +472,8 @@ const Game = () => {
     const isPlayerAlive = room.players[playerId].live === "live";
     const isPlayerWolf = room.players[playerId].role === "Ma sói";
     if (
-      playerId === user.uid ||
       timeForm !== "night" ||
       !isCurrentUserAlive() ||
-      isPlayerWolf ||
       !isPlayerAlive
     ) {
       return;
@@ -430,14 +499,21 @@ const Game = () => {
           });
         }
         break;
-      case "Tiên Tri":
-        // Xử lý hành động của Tiên tri
-        break;
-      case "Bảo vệ":
-        // Xử lý hành động của Bảo vệ
-        break;
-      case "Phù thủy":
-        // Xử lý hành động của Phù thủy
+      case "Tiên tri", "Bảo vệ", "Phù thủy":
+          // Nếu đã chọn người tiên tri/bảo vệ/đầu độc này trước đó, hủy chọn 
+        if (nightAction === playerId) {
+          setNightAction(null);
+          // Xóa người đang chọn để tiên tri/bảo vệ/đầu độc
+          await update(ref(database), {
+            [`rooms/${roomId}/players/${user.uid}/nightAction`]: null,
+          });
+        } else {
+          setNightAction(playerId);
+          // Cập nhật người cần tiên tri/bảo vệ/đầu độc khác
+          await update(ref(database), {
+            [`rooms/${roomId}/players/${user.uid}/nightAction`]: playerId,
+          });
+        }     
         break;
       default:
         break;
@@ -454,10 +530,47 @@ const Game = () => {
 
   const currentUserRole = getCurrentUserRole();
 
-  const isCurrentUserWolf = () => {
-    return currentUserRole === "Tiên Tri";
+  const isCurrentUserSeer = () => {
+    return currentUserRole === "Tiên tri";
   };
 
+  function checkWinCondition() {
+      
+    const roomRef = ref(database, `rooms/${roomId}`);
+    get(roomRef).then((snapshot) => {
+      if (snapshot.exists()) {
+        const roomData = snapshot.val();
+        const players = roomData.players;
+  
+        // Count number of alive villagers and wolves
+        let wolfCount = 0;
+        let villagerCount = 0;
+      
+        Object.values(players).forEach(player => {
+          if (player.live === 'live') {
+            if (player.role === 'Ma sói') {
+              wolfCount++;
+            } else {
+              villagerCount++;
+            }
+          }
+        });
+        
+        // Check win conditions
+        if (wolfCount === 0) {
+          return setWinner("Dân làng");
+        } else if (wolfCount >= villagerCount) {
+          return setWinner("Ma sói");
+        } else {
+          return setWinner(null);  
+        }
+      } 
+    }).catch((error) => {
+      console.error(error);
+    });
+  }
+  
+  
   return (
     <div className="game">
       <div className="timer-grid">
@@ -481,6 +594,7 @@ const Game = () => {
           handleVote={timeForm === "night" ? handleNightAction : handleVote}
           currentVote={timeForm === "night" ? nightAction : currentVote}
           timeForm={timeForm}
+          seerResult = {seerResult}
         />
       </div>
       {isGameReady && (
@@ -498,6 +612,12 @@ const Game = () => {
           />
         )}
       </div>
+      <Dialog open={!!winner}>
+        <DialogTitle style={{  backgroundColor: 'black' }}>
+          {`Người chiến thắng là: ${winner}`}
+          <div>{`Đang đóng trong ${countdownclose} giây...`}</div>
+        </DialogTitle>
+      </Dialog>
     </div>
   );
 };

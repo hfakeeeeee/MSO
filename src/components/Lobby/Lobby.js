@@ -40,14 +40,15 @@ const Lobby = () => {
 
   const joinRoom = async (roomId) => {
     if (!user) return;
+    
     const roomRef = ref(database, `rooms/${roomId}`);
     const playersRef = child(roomRef, "players");
     await update(playersRef, {
       [user.uid]: {
         displayName: user.displayName || user.email,
-        role: 0,
+        role: "Chưa phân vai trò",
         live: "live",
-        status: "waiting",
+        userID: user.uid,
       },
     });
     navigate(`/game/${roomId}`);
@@ -72,17 +73,17 @@ const Lobby = () => {
     const roomRef = ref(database, "rooms");
     const newRoom = {
       name: newGameName,
-      players: {
-        [user.uid]: {
-          displayName: user.displayName || user.email,
-          role: 0,
-          live: "live",
-          status: "waiting",
-        },
-      },
+      // players: {
+      //   [user.uid]: {
+      //     displayName: user.displayName || user.email,
+      //     role: 0,
+      //     live: "live",
+      //     status: "waiting",
+      //     userID: user.uid
+      //   },
+      // },
       status: "waiting",
       timeForm: "day",
-      currentTurn: 0,
       maxPlayer: 16,
       minPlayer: 8,
     };

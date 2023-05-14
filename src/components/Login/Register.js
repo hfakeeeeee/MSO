@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { auth } from "../../firebase";
 import "./Register.css";
 import { useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { getDatabase, ref, set } from "firebase/database";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -12,11 +13,28 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      
+      const user = userCredential.user;
+
+      const name = email.split('@')[0]; // Lấy phần trước ký tự '@' của địa chỉ email
+      await updateProfile(user, {
+        displayName: name
+      });
+
+      // Create a reference to the users node
+      const db = getDatabase();
+      const usersRef = ref(db, `users/${user.uid}`);
+
+      // Set the user data
+      await set(usersRef, {
+        Name: name,
+        UserID: user.uid,
+        email: user.email
+      });
+
       navigate("/Lobby");
-      // Registration successful, you can now perform additional actions, e.g., redirect to another page, etc.
     } catch (error) {
-      // Handle registration errors here.
       console.error(error);
     }
   };

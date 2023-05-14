@@ -1,7 +1,7 @@
 import React from 'react';
 import './PlayerCard.css';
 
-const PlayerCard = ({ playerId, playerData, isCurrentUser, handleVote, room, currentVote, playerIndex, players, timeForm, bothWolf, isCurrentUserWolf }) => {
+const PlayerCard = ({ playerId, playerData, isCurrentUser, handleVote, room, currentVote, playerIndex, players, timeForm, bothWolf, isCurrentUserWolf}) => {
   const playerName = playerData
     ? playerData.displayName || playerData.email
     : 'No Player';
@@ -18,7 +18,7 @@ const PlayerCard = ({ playerId, playerData, isCurrentUser, handleVote, room, cur
   return (
     <div
       className={`player-card ${!isCurrentUser && playerData ? 'clickable' : ''} ${!isAlive ? 'dead-player' : ''} ${isCurrentUser && isAlive ? 'current-user' : ''} ${bothWolf ? 'wolf' : ''}`}
-      onClick={!isCurrentUser && playerData ? () => handleVote(playerId) : undefined}
+      onClick={ playerData ? () => handleVote(playerId) : undefined}
     >
       <div className="player-rectangle">
         <div className="player-number">{playerIndex + 1}.</div>
@@ -26,8 +26,18 @@ const PlayerCard = ({ playerId, playerData, isCurrentUser, handleVote, room, cur
       </div>
       <div className="player-votes">
         <div> ({timeForm === 'night' && isCurrentUserWolf ? voteWolfCount : voteCount} votes) </div>
-        {/* Rest of the code */}
-      </div>
+        
+        
+        {playerData && isCurrentUser && (
+          <p>Đang bầu: {room.players[currentVote]?.displayName || room.players[currentVote]?.email || 'Chưa bầu'}</p>
+        )}
+        {playerData && !isCurrentUser &&  bothWolf &&  (
+          <p>Đang bầu: {room.players[timeForm !== "night"? currentUserVote: currentWolfVote]?.displayName || room.players[currentUserVote]?.email || 'Chưa bầu'}</p>
+        )}
+        {playerData && !isCurrentUser &&  !bothWolf && (
+          <p>Đang bầu: {room.players[currentUserVote]?.displayName || room.players[currentUserVote]?.email || 'Chưa bầu'}</p>
+        )}      
+        </div>
     </div>
   );
 };

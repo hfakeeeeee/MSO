@@ -1,13 +1,3 @@
-// src/components/Game/roles.js
-const ROLES = [
-  "Ma Sói",
-  "Dân làng",
-  "Tiên tri",
-  "Bảo vệ",
-  "Phù thủy",
-  // Thêm vai trò khác nếu cần
-];
-
 const shuffleArray = (array) => {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
