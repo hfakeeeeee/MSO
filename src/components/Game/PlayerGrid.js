@@ -1,7 +1,7 @@
 import React from "react";
 import PlayerCard from "./PlayerCard";
 
-const PlayerGrid = ({ room, user, handleVote, currentVote, timeForm}) => {
+const PlayerGrid = ({ room, user, handleVote, currentVote, timeForm }) => {
   return (
     <div className="players-grid">
       {Array.from({ length: 16 }, (_, i) => i).map((_, index) => {
@@ -27,7 +27,6 @@ const PlayerGrid = ({ room, user, handleVote, currentVote, timeForm}) => {
             timeForm={timeForm}
             bothWolf={bothWolf}
             isCurrentUserWolf={isCurrentUserWolf}
-           
           />
         );
       })}

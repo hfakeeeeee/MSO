@@ -35,7 +35,17 @@
   font-weight: bold;
 }
 
-.player-card.current-user {
+.color-vote {
+  color: white;
+}
+
+.playercard-vote {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.player-card {
   color: black;
   background-image: url("day_5.jpg");
   background-size: cover;
@@ -44,7 +54,6 @@
 
 .player-card.dead-player {
   color: white;
-  background-color: rgb(184, 46, 46, 0.6);
   background-image: url("dead_2.png");
   background-size: cover;
   background-position: center center;

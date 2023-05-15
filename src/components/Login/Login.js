@@ -31,7 +31,7 @@ const Login = () => {
 
   return (
     <div className="login">
-      <h1>LOGIN</h1>
+      <h1 className="header-login">LOGIN</h1>
       <form onSubmit={handleLogin}>
         <div className="form-group">
           <input className="login-input"
