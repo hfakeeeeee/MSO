@@ -17,8 +17,8 @@ export const assignRoles = (players) => {
     roles = [
       "Tiên tri",
       "Bảo vệ",
-      "Ma Sói",
-      "Ma Sói",
+      "Ma sói",
+      "Ma sói",
       "Dân làng",
       "Dân làng",
       "Dân làng",
@@ -28,7 +28,7 @@ export const assignRoles = (players) => {
       roles.push("Phù thủy");
     }
     if (playerCount >= 10) {
-      roles.push("Ma Sói");
+      roles.push("Ma sói");
     }
     if (playerCount >= 11) {
       roles.push("Ngố");
@@ -40,13 +40,13 @@ export const assignRoles = (players) => {
       roles.push("Dân làng");
     }
     if (playerCount >= 14) {
-      roles.push("Ma Sói");
+      roles.push("Ma sói");
     }
     if (playerCount >= 15) {
       roles.push("Dân làng");
     }
     if (playerCount >= 16) {
-      roles.push("Ma Sói");
+      roles.push("Ma sói");
     }
   }
 

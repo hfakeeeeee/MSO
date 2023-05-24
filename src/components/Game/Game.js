@@ -24,7 +24,7 @@ import { Alert } from "antd";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
-const MIN_PLAYERS = 3;
+const MIN_PLAYERS = 8;
 const MAX_PLAYERS = 16;
 const TIME_REMAINING_DAY = 9;
 const TIME_REMAINING_VOTING = 3;
@@ -194,10 +194,14 @@ const Game = () => {
       ) {
         wolfVoteCount[player.nightAction] =
           (wolfVoteCount[player.nightAction] || 0) + 1;
-        if (player.userID === seeredPlayer) {
+      }
+      if (
+        player.live === "live" &&
+        player.role === "Ma sói" &&
+        player.userID === seeredPlayer)
+        {
           seerResult = "Sói";
         }
-      }
     });
 
     // Tìm người chơi có số phiếu bầu lớn nhất
@@ -500,7 +504,9 @@ const Game = () => {
           });
         }
         break;
-      case ("Tiên tri", "Bảo vệ", "Phù thủy"):
+      case "Tiên tri":
+      case "Bảo vệ":
+      case "Phù thủy":
         // Nếu đã chọn người tiên tri/bảo vệ/đầu độc này trước đó, hủy chọn
         if (nightAction === playerId) {
           setNightAction(null);

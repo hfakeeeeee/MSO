@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { auth, database } from "../../firebase";
 import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { onValue, ref, push, set, child, update } from "firebase/database";
+import { onValue, ref, push, set, child, update, get } from "firebase/database";
 import { BsPersonFill, BsPower } from "react-icons/bs";
 
 import "./Lobby.css";
@@ -39,9 +39,13 @@ const Lobby = () => {
   }, []);
 
   const joinRoom = async (roomId) => {
-    if (!user) return;
-    
+
     const roomRef = ref(database, `rooms/${roomId}`);
+    const roomSnapshot = await get(roomRef);
+    const roomData = roomSnapshot.val();
+  
+    if (!user ||  roomData.status === "playing") return;
+    
     const playersRef = child(roomRef, "players");
     await update(playersRef, {
       [user.uid]: {
