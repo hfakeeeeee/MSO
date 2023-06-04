@@ -10,7 +10,6 @@ import "./Lobby.css";
 
 const Lobby = () => {
   const [rooms, setRooms] = useState([]);
-  const [newRoomName, setNewRoomName] = useState("");
   const [user, setUser] = useState(null);
   const [showUserInfo, setShowUserInfo] = useState(false);
   const [showCreateGameInput, setShowCreateGameInput] = useState(false);
