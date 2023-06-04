@@ -1,15 +1,25 @@
 import React from 'react';
+import { useNavigate } from "react-router-dom";
 import './Instructions.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 const Instructions = () => {
+  const navigate = useNavigate();
+
+  const toggleLobby = () => {
+    navigate("/lobby");
+  };
   return (
     <div className="container">
       <div className="white-rounded-rectangle">
         <div className="title">
-          <FontAwesomeIcon className="back-icon" icon={faArrowLeft} />
-          <h1>Werewolf Game Instructions</h1>
+          <div>
+            <FontAwesomeIcon className="back-icon" icon={faArrowLeft} onClick={toggleLobby} />
+          </div>
+          <div>
+            <h1>Werewolf Game Instructions</h1>
+          </div>
         </div>
         <div className="section">
           <h2 className="section-title">Objective:</h2>

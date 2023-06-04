@@ -146,7 +146,7 @@ const Lobby = () => {
           )}
         </div>
         <div className="room-list-container">
-          <h2>Lastest game room</h2>
+          <h2 className="lobby-title">Lastest game room</h2>
           <ul className="room-list">
             {rooms.slice(-5).map((room) => (
               <li key={room.id} onClick={() => joinRoom(room.id)}>
