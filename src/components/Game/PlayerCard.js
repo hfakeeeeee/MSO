@@ -44,41 +44,19 @@ const PlayerCard = ({
         {/* Player name to the right of player number */}
       </div>
       <div className="player-votes">
-        <div className="playercard-vote">
-          {" "}
-          (
-          {timeForm === "night" && isCurrentUserWolf
-            ? voteWolfCount
-            : voteCount}{" "}
-          votes){" "}
-        </div>
+        <div> ({timeForm === 'night' && isCurrentUserWolf ? voteWolfCount : voteCount} votes) </div>
+        
+        
         {playerData && isCurrentUser && (
-          <p className="color-vote">
-            Đang bầu:{" "}
-            {room.players[currentVote]?.displayName ||
-              room.players[currentVote]?.email ||
-              "Chưa bầu"}
-          </p>
+          <p>Đang bầu: {room.players[currentVote]?.displayName || room.players[currentVote]?.email || 'Chưa bầu'}</p>
         )}
-        {playerData && !isCurrentUser && bothWolf && (
-          <p className="color-vote">
-            Đang bầu:{" "}
-            {room.players[
-              timeForm !== "night" ? currentUserVote : currentWolfVote
-            ]?.displayName ||
-              room.players[currentUserVote]?.email ||
-              "Chưa bầu"}
-          </p>
+        {playerData && !isCurrentUser &&  bothWolf &&  (
+          <p>Đang bầu: {room.players[timeForm !== "night"? currentUserVote: currentWolfVote]?.displayName || room.players[currentUserVote]?.email || 'Chưa bầu'}</p>
         )}
-        {playerData && !isCurrentUser && !bothWolf && (
-          <p className="color-vote">
-            Đang bầu:{" "}
-            {room.players[currentUserVote]?.displayName ||
-              room.players[currentUserVote]?.email ||
-              "Chưa bầu"}
-          </p>
-        )}
-      </div>
+        {playerData && !isCurrentUser &&  !bothWolf && (
+          <p>Đang bầu: {room.players[currentUserVote]?.displayName || room.players[currentUserVote]?.email || 'Chưa bầu'}</p>
+        )}      
+        </div>
     </div>
   );
 };

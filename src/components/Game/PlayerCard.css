@@ -26,6 +26,10 @@
   padding: 0 8px; /* Added padding for better spacing */
 }
 
+.black-text {
+  color: #000000;
+}
+
 .player-number {
   margin-right: 7px;
   font-weight: bold;

@@ -37,10 +37,10 @@ export const assignRoles = (players) => {
       roles.push("Dân làng");
     }
     if (playerCount >= 13) {
-      roles.push("Dân làng");
+      roles.push("Ma sói");
     }
     if (playerCount >= 14) {
-      roles.push("Ma sói");
+      roles.push("Ma Sói");
     }
     if (playerCount >= 15) {
       roles.push("Dân làng");
